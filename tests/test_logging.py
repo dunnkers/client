@@ -1,6 +1,7 @@
 import pytest
 import logging
 
+
 def test_logging(wandb_init):
     root_logger = logging.getLogger()
     root_logger.setLevel("DEBUG")
