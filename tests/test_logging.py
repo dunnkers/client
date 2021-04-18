@@ -42,5 +42,6 @@ def test_logging(wandb_init):
     root_logger.warn("warn5")
 
     assert root_logs == ["info1", "warn1", "info2", "warn2", "info5", "warn5"]
-    assert wandb_logs == ["info3", "warn3", "info4", "warn4"]
+    assert not any([msg in wandb_logs for msg in root_logs])
+    assert all([msg in wandb_logs for msg in ["info3", "warn3", "info4", "warn4"]])
     assert wandb_child_logs == ["info4", "warn4"]
