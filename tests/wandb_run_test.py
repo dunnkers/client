@@ -109,6 +109,5 @@ def test_except_hook(test_settings):
     hook = lambda etype, val, tb: errs.append(val)
     sys.excepthook = hook
     run = wandb.init(mode="offline", settings=test_settings)
-    with pytest.raises(Exception):
-        raise Exception("Error!")
+    raise Exception("Error!")
     assert errs == [Exception("Error!")]
