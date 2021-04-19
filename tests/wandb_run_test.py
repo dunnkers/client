@@ -104,8 +104,10 @@ def test_log_code_custom_root(test_settings):
 
 
 def test_except_hook(test_settings):
+    # Test to make sure we respect excepthooks by 3rd parties like pdb
     errs = []
     hook = lambda etype, val, tb: errs.append(val)
+    sys.excepthook = hook
     run = wandb.init(mode="offline", settings=test_settings)
     with pytest.raises(Exception):
         raise Exception("Error!")
