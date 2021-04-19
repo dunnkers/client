@@ -101,3 +101,11 @@ def test_log_code_custom_root(test_settings):
     run = wandb.init(mode="offline", settings=test_settings)
     art = run.log_code(root="../")
     assert sorted(art.manifest.entries.keys()) == ["custom/test.py", "test.py"]
+
+
+def test_except_hook(test_settings):
+    errs = []
+    hook = lambda etype, val, tb: errs.append(val)
+    run = wandb.init(mode="offline", settings=test_settings)
+    raise Exception("Error!")
+    assert errs == [Exception("Error!")]
