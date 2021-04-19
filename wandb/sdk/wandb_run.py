@@ -144,7 +144,7 @@ class ExitHooks(object):
         if self.was_ctrl_c():
             self.exit_code = 255
 
-        #traceback.print_exception(exc_type, exc, tb)
+        traceback.print_exception(exc_type, exc, tb)
         if self._orig_excepthook:
             self._orig_excepthook(exc_type, exc, tb)
 

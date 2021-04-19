@@ -108,6 +108,24 @@ def test_except_hook(test_settings):
     errs = []
     hook = lambda etype, val, tb: errs.append(val)
     sys.excepthook = hook
+
+    # We cant use raise statement in pytest context
+    raise_ = lambda exc: sys.excepthook(type(exc), exc, None)
+
+    raise_ (Exception("Before wandb.init()"))
+
     run = wandb.init(mode="offline", settings=test_settings)
-    raise Exception("Error!")
-    assert errs == [Exception("Error!")]
+
+    old_stderr_write = sys.stderr.write
+    stderr = []
+    sys.stderr.write = stderr.append
+
+    raise_ (Exception("After wandb.init()"))
+
+    assert errs == [Exception("Before wandb.init()"),
+    Exception("After wandb.init()")]
+
+    # make sure wandb prints the traceback
+    assert stderr == ["Exception: After wandb.init()\n", ""]
+
+    sys.stderr.write = old_stderr_write
