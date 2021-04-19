@@ -106,13 +106,13 @@ def test_log_code_custom_root(test_settings):
 def test_except_hook(test_settings):
     # Test to make sure we respect excepthooks by 3rd parties like pdb
     errs = []
-    hook = lambda etype, val, tb: errs.append(val)
+    hook = lambda etype, val, tb: errs.append(str(a))
     sys.excepthook = hook
 
     # We cant use raise statement in pytest context
     raise_ = lambda exc: sys.excepthook(type(exc), exc, None)
 
-    raise_ (Exception("Before wandb.init()"))
+    raise_(Exception("Before wandb.init()"))
 
     run = wandb.init(mode="offline", settings=test_settings)
 
@@ -120,10 +120,9 @@ def test_except_hook(test_settings):
     stderr = []
     sys.stderr.write = stderr.append
 
-    raise_ (Exception("After wandb.init()"))
+    raise_(Exception("After wandb.init()"))
 
-    assert errs == [Exception("Before wandb.init()"),
-    Exception("After wandb.init()")]
+    assert errs == ["Before wandb.init()", "After wandb.init()"]
 
     # make sure wandb prints the traceback
     assert stderr == ["Exception: After wandb.init()\n", ""]
